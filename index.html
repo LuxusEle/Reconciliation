@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <meta charset="utf-8" /><meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  /><title>Bank reconciliation</title>
+  <link rel="stylesheet" href="./styles.css">
+  <header>RECONCILIATION / WORKSPACE</header>
+  <main>
+    <h1>Find transactions to reverse.</h1>
+    <p>
+      Upload Core and D Navi. Core-only transactions and LankaPay 910/911 responses are listed as
+      “Should be reversed”.
+    </p>
+    <form id="form" class="panel">
+      <div class="uploads">
+        <label class="upload"
+          ><strong>01 · D Navi</strong
+          ><small>LankaPay transaction export · .xlsx</small
+          ><input id="dn" type="file" accept=".xlsx" required /></label
+        ><label class="upload"
+          ><strong>02 · Core</strong
+          ><small>Bank-side transaction export · .xlsx</small
+          ><input id="core" type="file" accept=".xlsx" required
+        /></label>
+      </div>
+      <fieldset id="direction-options" hidden>
+        <legend>Transaction direction (optional)</legend>
+        <div class="actions">
+          <label>File containing the direction column
+            <select id="direction-file"><option value="" selected>Select a file</option><option value="dn">D Navi</option><option value="core">Core</option></select>
+          </label>
+          <label>Column header name
+            <input id="direction-header" type="text" placeholder="For example: Transaction Direction">
+          </label>
+        </div>
+        <p class="note">Leave the header blank to continue without direction. Both 910 (issuer signed off) and 911 (timeout) are marked for reversal, regardless of direction. If supplied, the column value is included in the report as entered in the file.</p>
+      </fieldset>
+      <div class="actions"><button id="run">Generate report</button></div>
+      <p class="note">
+        Match by account number and sequence. Mark transactions missing from D Navi,
+        and transactions with D Navi Action Code 910 or 911, for reversal. D Navi-only 910/911
+        transactions are included too. Amounts are shown as supplied in Core.
+        Use files from the same period.
+      </p>
+      <p class="note">
+        Files stay in your browser. Nothing is uploaded to a server. Upload
+        .xlsx files.
+      </p>
+    </form>
+    <p id="message" role="status" aria-live="polite"></p>
+    <section id="results" class="panel" hidden>
+      <div class="cards" id="cards"></div>
+      <div class="actions">
+        <input
+          id="search"
+          type="search"
+          placeholder="Search account or sequence"
+          aria-label="Search account or sequence"
+        /><button id="download">Download Excel report</button>
+      </div>
+      <div id="table-filters" class="table-filters" role="group" aria-label="Filter reversal transactions">
+        <button type="button" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" data-filter="911" aria-pressed="false">911</button>
+        <button type="button" data-filter="910" aria-pressed="false">910</button>
+        <button type="button" data-filter="present" aria-pressed="false">Present in D Navi</button>
+        <button type="button" data-filter="absent" aria-pressed="false">Absent from D Navi</button>
+      </div>
+      <p id="shown" class="note" role="status" aria-live="polite"></p>
+      <div class="scroll">
+        <table>
+          <thead id="head"></thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+    </section>
+    <footer>
+      Excel includes transactions to reverse with source columns, plus complete
+      Core and D Navi source sheets.
+    </footer>
+  </main>
+  <script type="module" src="./app.js"></script>
+</html>
